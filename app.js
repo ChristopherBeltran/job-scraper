@@ -10,6 +10,8 @@ app.use(express.json());
 app.get('/api/v1/linkedIn', async (req, res) => {
     let baseUrl = 'https://api.linkedin.com/v1/job-search'
     try {
+        let authUrl = `https://www.linkedin.com/oauth/v2/accessToken?grant_type=client_credentials&client_id=${process.env.LINKEDIN_ID}&client_secret=${process.env.LINKEDIN_SECRET}`
+
         //make call to linkedIn API
         res.send('Linked in stuff happening soon!')
     } catch (e) {
@@ -32,6 +34,18 @@ app.get('/api/v1/dice', async (req, res) => {
     try {
         //make call to linkedIn API
         res.send('Dice stuff happening soon!')
+    } catch (e) {
+        res.status(500).send()
+    }
+})
+
+app.get('/api/v1/scraper', async (req, res) => {
+    const providers = Object.values(req.body)
+    for (const provider of providers) {
+        console.log('Starting web scraper for ' + provider)
+    }
+    try {
+        res.send('Gonna automate some web scrapers for you')
     } catch (e) {
         res.status(500).send()
     }
