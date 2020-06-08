@@ -1,6 +1,7 @@
 const express = require("express");
 const requestIp = require('request-ip');
-const runIndeed = module.imports.runIndeed
+const scraperRouter = require('./scraper_routers/scraperRouter')
+
 
 require("./mongoose");
 
@@ -24,8 +25,7 @@ app.get('/api/v1/linkedIn', async (req, res) => {
 app.get('/api/v1/indeed', async (req, res) => {
     let baseUrl = `https://api.indeed.com/ads/apisearch?publisher=${process.env.INDEED_KEY}`
     try {
-        //make call to linkedIn API
-        res.send('Indeed stuff happening soon!')
+
     } catch (e) {
         res.status(500).send()
     }
@@ -42,12 +42,13 @@ app.get('/api/v1/dice', async (req, res) => {
 })
 
 app.get('/api/v1/scraper', async (req, res) => {
-    const providers = Object.values(req.body)
-    for (const provider of providers) {
-        console.log('Starting web scraper for ' + provider)
-    }
+    // //const providers = Object.values(req.body)
+    // for (const provider of providers) {
+    //     console.log('Starting web scraper for ' + provider)
+    // }
     try {
-        res.send('Gonna automate some web scrapers for you')
+        const results = await scraperRouter()
+        res.send(results)
     } catch (e) {
         res.status(500).send()
     }

@@ -12,9 +12,7 @@ const runLinkedIn = async ( /*searchParams*/ ) => {
     const url = 'https://www.linkedin.com/jobs'
 
 
-    const browser = await puppeteer.launch({
-        headless: false,
-    });
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.goto(url);
 
@@ -68,17 +66,21 @@ const runLinkedIn = async ( /*searchParams*/ ) => {
         const companyElement = $(el).find('h4 > a')
         const co = $(companyElement).text()
 
-        jobs.push(`${position}, ${co}, ${location}, ${link}`)
+        const jobObj = {}
+        jobObj['position'] = position
+        jobObj['company'] = co
+        jobObj['location'] = location
+        jobObj['link'] = link
+
+        jobs.push(jobObj)
+
     });
-    for (i = 0; i < jobs.length; i++) {
-        console.log(`${i+1}. ${jobs[i]}`)
-        console.log('--------------------------------------------------------------------------------------------------------')
-    }
+
     await browser.close();
+
+    return jobs
 
 
 }
-
-runLinkedIn()
 
 module.exports = runLinkedIn
