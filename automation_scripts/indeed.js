@@ -35,30 +35,30 @@ const runIndeed = async (jobTitle, jobLocation, datePosted, sortBy) => {
         }),
         page.click('#whatWhereFormId > div.icl-WhatWhere-buttonWrapper > button'),
     ]);
-    const pastDay = '#filter-dateposted-menu > li:nth-child(1)'
-    const pastThreeDays = '#filter-dateposted-menu > li:nth-child(2)'
-    const pastSevenDays = '#filter-dateposted-menu > li:nth-child(3)'
 
-    var postedDate
+    await page.waitFor(4000)
+    var results = await page.url()
+
 
     switch (datePosted) {
         case 'Past 24 Hours':
-            postedDate = pastDay
+            await page.goto(`${results}&fromage=1`)
+            await page.waitFor(6000)
             break;
         case 'Past 3 Days':
-            postedDate = pastThreeDays
+            await page.goto(`${results}&fromage=3`)
+            await page.waitFor(6000)
             break;
         case 'Past 7 Days':
-            postedDate = pastSevenDays
+            await page.goto(`${results}&fromage=7`)
+            await page.waitFor(6000)
             break;
         default:
-            postedDate = pastDay
+            await page.goto(`${results}&fromage=1`)
+            await page.waitFor(6000)
             break;
     }
-    await page.waitFor(4000)
-    await page.click('#filter-dateposted > button')
-    await page.click(postedDate)
-    await page.waitFor(3000)
+
 
     try {
         await page.waitForSelector('#popover-x > a > svg > g > path')
