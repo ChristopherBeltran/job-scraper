@@ -1,7 +1,7 @@
 const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
 
-const runGlassdoor = async ( /*searchParams*/ ) => {
+const runGlassdoor = async (jobTitle, jobLocation, datePosted, sortBy) => {
     // const {
     //     jobTitle,
     //     location,
@@ -13,14 +13,12 @@ const runGlassdoor = async ( /*searchParams*/ ) => {
     const pageLimit = 30
     const nextPage = '.next > a:nth-child(1)'
 
-    const browser = await puppeteer.launch({
-        headless: false,
-    });
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.goto(url);
 
     await page.focus('#KeywordSearch')
-    await page.keyboard.type('Software Engineer')
+    await page.keyboard.type(`${jobTitle}`)
 
     await page.focus('#LocationSearch')
     let locationInput = await page.$('#LocationSearch')
@@ -28,7 +26,7 @@ const runGlassdoor = async ( /*searchParams*/ ) => {
         clickCount: 3
     });
     await locationInput.press('Backspace');
-    await page.keyboard.type('Denver, CO')
+    await page.keyboard.type(`${jobLocation}`)
 
     await Promise.all([
         page.waitForNavigation({
@@ -39,14 +37,34 @@ const runGlassdoor = async ( /*searchParams*/ ) => {
         page.click('#HeroSearchButton'),
     ]);
 
-    //change search to filter by last 3 days
-    await page.click('#filter_fromAge')
-    await page.click('.css-1dv4b0s > li:nth-child(3) > span:nth-child(1)')
-    await page.waitFor(5000);
-    //change search to filter by most recent
-    let resultsUrl = await page.url()
-    await page.goto(`${resultsUrl}&sortBy=date_desc`)
-    await page.waitFor(6000)
+    var results = await page.url()
+
+    switch (datePosted) {
+        case 'Past 24 Hours':
+            await page.goto(`${results}&fromAge=1`)
+            await page.waitFor(10000)
+            break;
+        case 'Past 3 Days':
+            await page.goto(`${results}&fromAge=3`)
+            await page.waitFor(10000)
+            break;
+        case 'Past 7 Days':
+            await page.goto(`${results}&fromAge=7`)
+            await page.waitFor(10000)
+            break;
+        default:
+            await page.goto(`${results}&fromAge=1`)
+            await page.waitFor(10000)
+            break;
+    }
+
+    var resultsUrl = await page.url()
+
+    if (sortBy === 'Most Recent') {
+        //change search to filter by most recent
+        await page.goto(`${resultsUrl}&sortBy=date_desc`)
+        await page.waitFor(6000)
+    }
 
     const radiusSelector = '#filter_radius'
     const fiveMileRadius = '.css-1dv4b0s > li:nth-child(2) > span:nth-child(1)'
@@ -69,17 +87,18 @@ const runGlassdoor = async ( /*searchParams*/ ) => {
         const jobLink = $(el).find('.jobLink')
         const link = $(jobLink).attr('href')
 
-        jobs.push(`${position}, ${co}, ${location}, ${link}`)
+        const jobObj = {}
+        jobObj['position'] = position
+        jobObj['company'] = co
+        jobObj['location'] = location
+        jobObj['link'] = link
+
+        jobs.push(jobObj)
     });
-    for (i = 0; i < jobs.length; i++) {
-        console.log(`${i+1}. ${jobs[i]}`)
-        console.log('--------------------------------------------------------------------------------------------------------')
-    }
+
     await browser.close();
 
-
+    return jobs
 }
-
-runGlassdoor()
 
 module.exports = runGlassdoor

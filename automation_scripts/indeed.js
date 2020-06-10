@@ -1,7 +1,7 @@
 const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
 
-const runIndeed = async ( /*searchParams*/ ) => {
+const runIndeed = async (jobTitle, jobLocation, datePosted, sortBy) => {
     // const {
     //     jobTitle,
     //     location,
@@ -12,14 +12,12 @@ const runIndeed = async ( /*searchParams*/ ) => {
     const url = 'https://www.indeed.com/'
 
 
-    const browser = await puppeteer.launch({
-        headless: false,
-    });
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.goto(url);
 
     await page.focus('#text-input-what')
-    await page.keyboard.type('Software Engineer')
+    await page.keyboard.type(`${jobTitle}`)
 
     await page.focus('#text-input-where')
     let locationInput = await page.$('#text-input-where')
@@ -27,7 +25,7 @@ const runIndeed = async ( /*searchParams*/ ) => {
         clickCount: 3
     });
     await locationInput.press('Backspace');
-    await page.keyboard.type('Denver, CO')
+    await page.keyboard.type(`${jobLocation}`)
 
     await Promise.all([
         page.waitForNavigation({
@@ -37,8 +35,31 @@ const runIndeed = async ( /*searchParams*/ ) => {
         }),
         page.click('#whatWhereFormId > div.icl-WhatWhere-buttonWrapper > button'),
     ]);
+    const pastDay = '#filter-dateposted-menu > li:nth-child(1)'
+    const pastThreeDays = '#filter-dateposted-menu > li:nth-child(2)'
+    const pastSevenDays = '#filter-dateposted-menu > li:nth-child(3)'
 
-    //change search to filter by last 3 days
+    var postedDate
+
+    switch (datePosted) {
+        case 'Past 24 Hours':
+            postedDate = pastDay
+            break;
+        case 'Past 3 Days':
+            postedDate = pastThreeDays
+            break;
+        case 'Past 7 Days':
+            postedDate = pastSevenDays
+            break;
+        default:
+            postedDate = pastDay
+            break;
+    }
+    await page.waitFor(4000)
+    await page.click('#filter-dateposted > button')
+    await page.click(postedDate)
+    await page.waitFor(3000)
+
     try {
         await page.waitForSelector('#popover-x > a > svg > g > path')
         await page.click('#popover-x > a > svg > g > path')
@@ -46,10 +67,13 @@ const runIndeed = async ( /*searchParams*/ ) => {
         console.log("Opt-in popup did not fire")
     }
 
-    //change search to filter by most recent
-    let resultsUrl = await page.url()
-    await page.goto(`${resultsUrl}&sort=date`)
-    await page.waitFor(6000)
+    var resultsUrl = await page.url()
+
+    if (sortBy === 'Most Recent') {
+        //change search to filter by most recent
+        await page.goto(`${resultsUrl}&sort=date`)
+        await page.waitFor(6000)
+    }
 
     const content = await page.content();
     const $ = cheerio.load(content);
@@ -70,17 +94,18 @@ const runIndeed = async ( /*searchParams*/ ) => {
         const location = $(jobLocationChildElement).data('rc-loc')
         const link = $(jobTitleChildElement).attr('href')
 
-        jobs.push(`${position}, ${co}, ${location}, ${link}`)
+        const jobObj = {}
+        jobObj['position'] = position
+        jobObj['company'] = co
+        jobObj['location'] = location
+        jobObj['link'] = link
+
+        jobs.push(jobObj)
     });
-    for (i = 0; i < jobs.length; i++) {
-        console.log(`${i+1}. ${jobs[i]}`)
-        console.log('--------------------------------------------------------------------------------------------------------')
-    }
+
     await browser.close();
 
-
+    return jobs
 }
-
-runIndeed()
 
 module.exports = runIndeed

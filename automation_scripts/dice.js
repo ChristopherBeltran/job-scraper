@@ -1,27 +1,24 @@
 const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
 
-const runDice = async ( /*searchParams*/ ) => {
-    // const {
-    //     jobTitle,
-    //     location,
-    //     radius,
-    //     omittedTerms
-    // } = searchParams
+const runDice = async (jobTitle, jobLocation, datePosted, sortBy) => {
 
     const url = 'https://www.dice.com/'
 
     const browser = await puppeteer.launch({
-        headless: false,
+        args: [
+            '--start-maximized',
+        ],
+        defaultViewport: null
     });
     const page = await browser.newPage();
     await page.goto(url);
 
     await page.focus('input.ng-tns-c31-0')
-    await page.keyboard.type('Software Engineer')
+    await page.keyboard.type(`${jobTitle}`)
 
     await page.focus('#google-location-search')
-    await page.keyboard.type('Denver, CO, USA')
+    await page.keyboard.type(`${jobLocation}`)
 
     await Promise.all([
         page.waitForNavigation({
@@ -31,10 +28,28 @@ const runDice = async ( /*searchParams*/ ) => {
         }),
         page.click('#submitSearch-button'),
     ]);
-    const pastThreeDays = '#facets > dhi-accordion.facet-group.ng-tns-c74-5.ng-star-inserted > div.facet-body.ng-tns-c74-5.ng-trigger.ng-trigger-expand > div > js-single-select-filter > div > div > button:nth-child(3)'
-    const pastSevenDays = '#facets > dhi-accordion.facet-group.ng-tns-c74-5.ng-star-inserted > div.facet-body.ng-tns-c74-5.ng-trigger.ng-trigger-expand > div > js-single-select-filter > div > div > button:nth-child(4)'
 
     await page.waitFor(6000)
+
+    var resultsUrl = await page.url()
+    switch (datePosted) {
+        case 'Past 24 Hours':
+            await page.goto(`${resultsUrl}&filters.postedDate=ONE`)
+            await page.waitFor(6000)
+            break;
+        case 'Past 3 Days':
+            await page.goto(`${resultsUrl}&filters.postedDate=THREE`)
+            await page.waitFor(6000)
+            break;
+        case 'Past 7 Days':
+            await page.goto(`${resultsUrl}&filters.postedDate=SEVEN`)
+            await page.waitFor(6000)
+            break;
+        default:
+            await page.goto(`${resultsUrl}&filters.postedDate=ONE`)
+            await page.waitFor(6000)
+            break;
+    }
 
     const content = await page.content();
     const $ = cheerio.load(content);
@@ -51,20 +66,17 @@ const runDice = async ( /*searchParams*/ ) => {
         const locationElement = $(companyElement).find('#searchResultLocation')
         const location = $(locationElement).text()
 
-        jobs.push(`${position}, ${co}, ${location}, ${link}`)
-    });
-    for (i = 0; i < jobs.length; i++) {
-        console.log(`${i+1}. ${jobs[i]}`)
-        console.log('--------------------------------------------------------------------------------------------------------')
-    }
+        const jobObj = {}
+        jobObj['position'] = position
+        jobObj['company'] = co
+        jobObj['location'] = location
+        jobObj['link'] = link
 
+        jobs.push(jobObj)
+    });
 
     await browser.close();
-
-
-
+    return jobs
 }
-
-runDice()
 
 module.exports = runDice

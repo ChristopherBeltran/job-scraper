@@ -17,8 +17,9 @@ app.post('/api/v1/scraper', async (req, res) => {
     // for (const provider of providers) {
     //     console.log('Starting web scraper for ' + provider)
     // }
+    const body = req.body
     try {
-        const results = await scraperRouter()
+        const results = await scraperRouter(body)
         res.send(results)
     } catch (e) {
         res.status(500).send()

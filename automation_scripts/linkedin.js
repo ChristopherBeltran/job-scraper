@@ -1,13 +1,7 @@
 const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
 
-const runLinkedIn = async ( /*searchParams*/ ) => {
-    // const {
-    //     jobTitle,
-    //     location,
-    //     radius,
-    //     omittedTerms
-    // } = searchParams
+const runLinkedIn = async (jobTitle, jobLocation, datePosted, sortBy) => {
 
     const url = 'https://www.linkedin.com/jobs'
 
@@ -17,7 +11,7 @@ const runLinkedIn = async ( /*searchParams*/ ) => {
     await page.goto(url);
 
     await page.focus('#JOBS > section.dismissable-input.typeahead-input.keywords-typeahead-input > input')
-    await page.keyboard.type('Software Engineer')
+    await page.keyboard.type(`${jobTitle}`)
 
     await page.focus('#JOBS > section.dismissable-input.typeahead-input.location-typeahead-input > input')
     let locationInput = await page.$('#JOBS > section.dismissable-input.typeahead-input.location-typeahead-input > input')
@@ -25,7 +19,7 @@ const runLinkedIn = async ( /*searchParams*/ ) => {
         clickCount: 3
     });
     await locationInput.press('Backspace');
-    await page.keyboard.type('Denver, CO')
+    await page.keyboard.type(`${jobLocation}`)
 
     await Promise.all([
         page.waitForNavigation({
@@ -36,20 +30,43 @@ const runLinkedIn = async ( /*searchParams*/ ) => {
         page.click('body > main > section.section.section--hero > section > div.search__tabs.isExpanded > button:nth-child(5)'),
     ]);
 
-    //change search to filter by last 3 days
+    //No Past 3 days option on LinkedIn
+    const pastDay = '#TIME_POSTED-dropdown > fieldset > div.filter-list > ul > li:nth-child(1) > label'
+    const pastSevenDays = '#TIME_POSTED-dropdown > fieldset > div.filter-list > ul > li:nth-child(2) > label'
 
+    var postedDate
+
+    switch (datePosted) {
+        case 'Past 24 Hours':
+            postedDate = pastDay
+            break;
+        case 'Past 3 Days':
+            postedDate = pastDay
+            break;
+        case 'Past 7 Days':
+            postedDate = pastSevenDays
+            break;
+        default:
+            postedDate = pastDay
+            break;
+    }
+    //change search to filter by last 3 days
     await page.waitFor(5000);
     await page.click('body > header > section > form > ul > li:nth-child(2) > div > button')
-    //past week
-    await page.click('#TIME_POSTED-dropdown > fieldset > div.filter-list > ul > li:nth-child(2) > label')
-    const pastDaySelector = '#TIME_POSTED-dropdown > fieldset > div.filter-list > ul > li:nth-child(1) > label'
+    await page.click(`${postedDate}`)
     await page.click('#TIME_POSTED-dropdown > fieldset > div.filter-button-dropdown__dropdown-actions > button')
     await page.waitFor(5000);
 
-    //change search to filter by most recent
-    let resultsUrl = await page.url()
-    await page.goto(`${resultsUrl}&sortBy=DD`)
-    await page.waitFor(6000)
+    var resultsUrl = await page.url()
+
+    if (sortBy === 'Most Recent') {
+        //change search to filter by most recent
+        await page.goto(`${resultsUrl}&sortBy=DD`)
+        await page.waitFor(6000)
+    } else if (sortBy === 'Most Relevant') {
+        await page.goto(`${resultsUrl}&sortBy=R`)
+        await page.waitFor(6000)
+    }
 
     const content = await page.content();
     const $ = cheerio.load(content);
