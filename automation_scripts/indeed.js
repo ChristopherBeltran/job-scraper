@@ -88,12 +88,15 @@ const runIndeed = async (jobTitle, jobLocation, datePosted, sortBy) => {
         const jobCompanyLocation = $(el).find('.sjcl')
         const jobCompanyChildElement = $(jobCompanyLocation).find('.company')
         const jobCompanyNameChildElement = $(jobCompanyChildElement).find('a')
-        const co = $(jobCompanyNameChildElement).text()
+        var co = $(jobCompanyNameChildElement).text()
+        if (co === "") {
+            co = $(jobCompanyChildElement).text()
+        }
 
         const jobLocationChildElement = $(jobCompanyLocation).find('.recJobLoc')
         const location = $(jobLocationChildElement).data('rc-loc')
         const link = $(jobTitleChildElement).attr('href')
-
+        console.log(co)
         const jobObj = {}
         jobObj['position'] = position
         jobObj['company'] = co

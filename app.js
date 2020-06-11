@@ -11,7 +11,7 @@ var corsOptions = {
 
 const app = express();
 
-app.use(cors(corsOptions))
+app.use(cors())
 app.use(requestIp.mw())
 app.use(express.json());
 
