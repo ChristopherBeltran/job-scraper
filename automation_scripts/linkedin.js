@@ -12,6 +12,7 @@ const runLinkedIn = async (jobTitle, jobLocation, datePosted, sortBy) => {
     const page = await browser.newPage();
     await page.goto(url);
 
+    await page.$('#JOBS > section.dismissable-input.typeahead-input.keywords-typeahead-input > input')
     await page.focus('#JOBS > section.dismissable-input.typeahead-input.keywords-typeahead-input > input')
     await page.keyboard.type(`${jobTitle}`)
 

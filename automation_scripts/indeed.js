@@ -28,15 +28,16 @@ const runIndeed = async (jobTitle, jobLocation, datePosted, sortBy) => {
     });
     await locationInput.press('Backspace');
     await page.keyboard.type(`${jobLocation}`)
+    await page.$('#whatWhereFormId > div.icl-WhatWhere-buttonWrapper > button'),
 
-    await Promise.all([
-        page.waitForNavigation({
-            options: {
-                waitUntil: 'load'
-            }
-        }),
-        page.click('#whatWhereFormId > div.icl-WhatWhere-buttonWrapper > button'),
-    ]);
+        await Promise.all([
+            page.waitForNavigation({
+                options: {
+                    waitUntil: 'load'
+                }
+            }),
+            page.click('#whatWhereFormId > div.icl-WhatWhere-buttonWrapper > button'),
+        ]);
 
     await page.waitFor(4000)
     var results = await page.url()
