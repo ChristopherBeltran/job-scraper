@@ -88,6 +88,8 @@ const runLinkedIn = async (jobTitle, jobLocation, datePosted, sortBy) => {
         jobObj['company'] = co
         jobObj['location'] = location
         jobObj['link'] = link
+        jobObj['source'] = 'LinkedIn'
+
 
         jobs.push(jobObj)
 

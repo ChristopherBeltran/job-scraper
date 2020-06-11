@@ -18,14 +18,13 @@ const scraperRouter = async (request) => {
         sortBy
     } = request
 
-    console.log(jobTitle)
     const results = []
 
     if (linkedIn) {
         try {
             const listings = await runLinkedIn(jobTitle, location, datePosted, sortBy)
             const ListingSerializer = new JSONAPISerializer('LinkedIn listings', {
-                attributes: ['position', 'company', 'location', 'link']
+                attributes: ['position', 'company', 'location', 'link', 'source']
             })
 
             const serializedListings = ListingSerializer.serialize(listings)
@@ -43,7 +42,7 @@ const scraperRouter = async (request) => {
         try {
             const listings = await runGlassdoor(jobTitle, location, datePosted, sortBy)
             const ListingSerializer = new JSONAPISerializer('Glassdoor listings', {
-                attributes: ['position', 'company', 'location', 'link']
+                attributes: ['position', 'company', 'location', 'link', 'source']
             })
 
             const serializedListings = ListingSerializer.serialize(listings)
@@ -59,7 +58,7 @@ const scraperRouter = async (request) => {
         try {
             const listings = await runIndeed(jobTitle, location, datePosted, sortBy)
             const ListingSerializer = new JSONAPISerializer('Indeed listings', {
-                attributes: ['position', 'company', 'location', 'link']
+                attributes: ['position', 'company', 'location', 'link', 'source']
             })
 
             const serializedListings = ListingSerializer.serialize(listings)
@@ -75,7 +74,7 @@ const scraperRouter = async (request) => {
         try {
             const listings = await runDice(jobTitle, location, datePosted, sortBy)
             const ListingSerializer = new JSONAPISerializer('Dice listings', {
-                attributes: ['position', 'company', 'location', 'link']
+                attributes: ['position', 'company', 'location', 'link', 'source']
             })
 
             const serializedListings = ListingSerializer.serialize(listings)

@@ -92,6 +92,8 @@ const runGlassdoor = async (jobTitle, jobLocation, datePosted, sortBy) => {
         jobObj['company'] = co
         jobObj['location'] = location
         jobObj['link'] = link
+        jobObj['source'] = 'Glassdoor'
+
 
         jobs.push(jobObj)
     });

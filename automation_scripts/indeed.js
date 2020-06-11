@@ -99,6 +99,8 @@ const runIndeed = async (jobTitle, jobLocation, datePosted, sortBy) => {
         jobObj['company'] = co
         jobObj['location'] = location
         jobObj['link'] = link
+        jobObj['source'] = 'Indeed'
+
 
         jobs.push(jobObj)
     });
