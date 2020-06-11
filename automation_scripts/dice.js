@@ -8,6 +8,7 @@ const runDice = async (jobTitle, jobLocation, datePosted, sortBy) => {
     const browser = await puppeteer.launch({
         args: [
             '--start-maximized',
+            '--no-sandbox', '--disable-setuid-sandbox'
         ],
         defaultViewport: null
     });

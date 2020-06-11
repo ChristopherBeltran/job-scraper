@@ -13,7 +13,9 @@ const runGlassdoor = async (jobTitle, jobLocation, datePosted, sortBy) => {
     const pageLimit = 30
     const nextPage = '.next > a:nth-child(1)'
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
     const page = await browser.newPage();
     await page.goto(url);
 
