@@ -3,12 +3,15 @@ const requestIp = require('request-ip');
 const cors = require('cors')
 const scraperRouter = require('./scraper_routers/scraperRouter')
 
+var corsOptions = {
+    origin: 'http://localhost:3000',
+    optionsSuccessStatus: 200
+}
 
-require("./mongoose");
 
 const app = express();
 
-app.use(cors())
+app.use(cors(corsOptions))
 app.use(requestIp.mw())
 app.use(express.json());
 
