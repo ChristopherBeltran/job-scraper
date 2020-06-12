@@ -17,7 +17,7 @@ const runIndeed = async (jobTitle, jobLocation, datePosted, sortBy) => {
     });
     const page = await browser.newPage();
     await page.goto(url);
-
+    await page.content()
     await page.focus('#text-input-what')
     await page.keyboard.type(`${jobTitle}`)
 
