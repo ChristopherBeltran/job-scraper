@@ -33,7 +33,8 @@ const runIndeed = async (jobTitle, jobLocation, datePosted, sortBy) => {
         await Promise.all([
             page.waitForNavigation({
                 options: {
-                    waitUntil: 'load'
+                    waitUntil: 'load',
+                    timeout: 0
                 }
             }),
             page.click('#whatWhereFormId > div.icl-WhatWhere-buttonWrapper > button'),

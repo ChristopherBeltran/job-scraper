@@ -19,7 +19,7 @@ const runGlassdoor = async (jobTitle, jobLocation, datePosted, sortBy) => {
     const page = await browser.newPage();
     await page.goto(url);
     await page.content()
-    await page.$('#KeywordSearch')
+    await page.waitForSelector('#KeywordSearch')
     await page.focus('#KeywordSearch')
     await page.keyboard.type(`${jobTitle}`)
 
