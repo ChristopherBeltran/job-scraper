@@ -10,8 +10,11 @@ const runLinkedIn = async (jobTitle, jobLocation, datePosted, sortBy) => {
         args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
 
-    const context = await browser.createIncognitoBrowserContext();
-    const page = await context.newPage();
+    const page = await browser.newPage();
+    const client = await page.target().createCDPSession();
+    await client.send('Network.clearBrowserCookies');
+    await client.send('Network.clearBrowserCache');
+    await page.waitFor(3000)
     await page.goto('https://www.linkedin.com/')
     await page.waitFor(5000)
     await page.goto(`${url}?keywords=${jobTitle}&location=${jobLocation}`);
