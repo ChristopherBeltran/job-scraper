@@ -9,7 +9,9 @@ const runLinkedIn = async (jobTitle, jobLocation, datePosted, sortBy) => {
     const browser = await puppeteer.launch({
         args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
-    const page = await browser.newPage();
+
+    const context = await browser.createIncognitoBrowserContext();
+    const page = await context.newPage();
     await page.goto('https://www.linkedin.com/')
     await page.waitFor(5000)
     await page.goto(`${url}?keywords=${jobTitle}&location=${jobLocation}`);
