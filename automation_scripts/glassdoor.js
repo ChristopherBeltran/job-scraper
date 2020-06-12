@@ -10,8 +10,6 @@ const runGlassdoor = async (jobTitle, jobLocation, datePosted, sortBy) => {
     // } = searchParams
 
     const url = 'https://www.glassdoor.com/Job/index.htm'
-    const pageLimit = 30
-    const nextPage = '.next > a:nth-child(1)'
 
     const browser = await puppeteer.launch({
         args: ['--no-sandbox', '--disable-setuid-sandbox']
@@ -19,6 +17,7 @@ const runGlassdoor = async (jobTitle, jobLocation, datePosted, sortBy) => {
     const page = await browser.newPage();
     await page.goto(url);
     await page.content()
+    console.log(page.url())
     await page.waitForSelector('#KeywordSearch')
     await page.focus('#KeywordSearch')
     await page.keyboard.type(`${jobTitle}`)
