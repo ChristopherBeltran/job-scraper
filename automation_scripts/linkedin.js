@@ -3,38 +3,15 @@ const puppeteer = require('puppeteer');
 
 const runLinkedIn = async (jobTitle, jobLocation, datePosted, sortBy) => {
 
-    const url = 'https://www.linkedin.com/jobs'
+    const url = 'https://www.linkedin.com/jobs/search'
 
 
     const browser = await puppeteer.launch({
         args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
     const page = await browser.newPage();
-    await page.goto(url);
+    await page.goto(`${url}?keywords=${jobTitle}&location=${jobLocation}`);
     await page.waitFor(6000)
-    console.log(page.url())
-
-    await page.content()
-    await page.$('#JOBS > section.dismissable-input.typeahead-input.keywords-typeahead-input > input')
-    await page.focus('#JOBS > section.dismissable-input.typeahead-input.keywords-typeahead-input > input')
-    await page.keyboard.type(`${jobTitle}`)
-
-    await page.focus('#JOBS > section.dismissable-input.typeahead-input.location-typeahead-input > input')
-    let locationInput = await page.$('#JOBS > section.dismissable-input.typeahead-input.location-typeahead-input > input')
-    await locationInput.click({
-        clickCount: 3
-    });
-    await locationInput.press('Backspace');
-    await page.keyboard.type(`${jobLocation}`)
-
-    await Promise.all([
-        page.waitForNavigation({
-            options: {
-                waitUntil: 'load'
-            }
-        }),
-        page.click('body > main > section.section.section--hero > section > div.search__tabs.isExpanded > button:nth-child(5)'),
-    ]);
 
     //No Past 3 days option on LinkedIn
     const pastDay = '#TIME_POSTED-dropdown > fieldset > div.filter-list > ul > li:nth-child(1) > label'
