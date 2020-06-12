@@ -35,6 +35,7 @@ const runLinkedIn = async (jobTitle, jobLocation, datePosted, sortBy) => {
     }
     //change search to filter by last 3 days
     await page.waitFor(5000);
+    await page.content()
     await page.waitForSelector('body > header > section > form > ul > li:nth-child(2) > div > button')
     await page.click('body > header > section > form > ul > li:nth-child(2) > div > button')
     await page.click(`${postedDate}`)
