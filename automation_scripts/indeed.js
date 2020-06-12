@@ -9,56 +9,39 @@ const runIndeed = async (jobTitle, jobLocation, datePosted, sortBy) => {
     //     omittedTerms
     // } = searchParams
 
-    const url = 'https://www.indeed.com/'
+    const url = 'https://www.indeed.com/jobs'
 
 
     const browser = await puppeteer.launch({
         args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
     const page = await browser.newPage();
-    await page.goto(url);
+    await page.goto(`${url}?q=${jobTitle}&l=${jobLocation}`);
+
+    await page.waitFor(5000)
     await page.content()
-    await page.focus('#text-input-what')
-    await page.keyboard.type(`${jobTitle}`)
-
-    await page.focus('#text-input-where')
-    let locationInput = await page.$('#text-input-where')
-    await locationInput.click({
-        clickCount: 3
-    });
-    await locationInput.press('Backspace');
-    await page.keyboard.type(`${jobLocation}`)
-    await page.$('#whatWhereFormId > div.icl-WhatWhere-buttonWrapper > button'),
-
-        await Promise.all([
-            page.waitForNavigation({
-                options: {
-                    waitUntil: 'load',
-                    timeout: 0
-                }
-            }),
-            page.click('#whatWhereFormId > div.icl-WhatWhere-buttonWrapper > button'),
-        ]);
-
-    await page.waitFor(4000)
     var results = await page.url()
 
 
     switch (datePosted) {
         case 'Past 24 Hours':
-            await page.goto(`${results}&fromage=1`)
+            await page.goto(`
+                    ${results}&fromage=1`)
             await page.waitFor(6000)
             break;
         case 'Past 3 Days':
-            await page.goto(`${results}&fromage=3`)
+            await page.goto(`
+                    ${results}&fromage=3`)
             await page.waitFor(6000)
             break;
         case 'Past 7 Days':
-            await page.goto(`${results}&fromage=7`)
+            await page.goto(`
+                    ${results}&fromage=7`)
             await page.waitFor(6000)
             break;
         default:
-            await page.goto(`${results}&fromage=1`)
+            await page.goto(`
+                    ${results}&fromage=1`)
             await page.waitFor(6000)
             break;
     }
