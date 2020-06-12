@@ -10,6 +10,8 @@ const runLinkedIn = async (jobTitle, jobLocation, datePosted, sortBy) => {
         args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
     const page = await browser.newPage();
+    await page.goto('https://www.linkedin.com/')
+    await page.waitFor(5000)
     await page.goto(`${url}?keywords=${jobTitle}&location=${jobLocation}`);
     await page.waitFor(6000)
 
