@@ -16,9 +16,9 @@ const runLinkedIn = async (jobTitle, jobLocation, datePosted, sortBy) => {
     await client.send('Network.clearBrowserCache');
     await page.waitFor(3000)
     await page.goto('https://www.linkedin.com/')
-    await page.waitFor(5000)
+    await page.waitFor(8000)
     await page.goto(`${url}?keywords=${jobTitle}&location=${jobLocation}`);
-    await page.waitFor(6000)
+    await page.waitFor(8000)
 
     //No Past 3 days option on LinkedIn
     const pastDay = '#TIME_POSTED-dropdown > fieldset > div.filter-list > ul > li:nth-child(1) > label'
