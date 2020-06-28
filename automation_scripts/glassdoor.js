@@ -2,12 +2,7 @@ const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
 
 const runGlassdoor = async (jobTitle, jobLocation, datePosted, sortBy) => {
-    // const {
-    //     jobTitle,
-    //     location,
-    //     radius,
-    //     omittedTerms
-    // } = searchParams
+    console.log('Starting Glassdoor scrape...')
 
     const url = 'https://www.glassdoor.com/Job/index.htm'
 
@@ -102,6 +97,7 @@ const runGlassdoor = async (jobTitle, jobLocation, datePosted, sortBy) => {
 
     await browser.close();
 
+    console.log('Scrape complete')
     return jobs
 }
 

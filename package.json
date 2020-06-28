@@ -4,8 +4,8 @@
   "description": "node & express app to scrape job sites",
   "main": "index.js",
   "scripts": {
-    "start": "env-cmd -f .env node src/index.js",
-    "dev": "env-cmd -f .env npx nodemon src/index.js"
+    "start": "env-cmd -f .env node index.js",
+    "dev": "env-cmd -f .env npx nodemon index.js"
   },
   "author": "Christopher Beltran",
   "license": "ISC",

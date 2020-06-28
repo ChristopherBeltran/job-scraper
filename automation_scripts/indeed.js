@@ -2,12 +2,7 @@ const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
 
 const runIndeed = async (jobTitle, jobLocation, datePosted, sortBy) => {
-    // const {
-    //     jobTitle,
-    //     location,
-    //     radius,
-    //     omittedTerms
-    // } = searchParams
+    console.log('Starting Indeed scrape...')
 
     const url = 'https://www.indeed.com/jobs'
 
@@ -83,7 +78,6 @@ const runIndeed = async (jobTitle, jobLocation, datePosted, sortBy) => {
         const jobLocationChildElement = $(jobCompanyLocation).find('.recJobLoc')
         const location = $(jobLocationChildElement).data('rc-loc')
         const link = $(jobTitleChildElement).attr('href')
-        console.log(co)
         const jobObj = {}
         jobObj['position'] = position
         jobObj['company'] = co
@@ -96,7 +90,7 @@ const runIndeed = async (jobTitle, jobLocation, datePosted, sortBy) => {
     });
 
     await browser.close();
-
+    console.log('Scrape complete')
     return jobs
 }
 

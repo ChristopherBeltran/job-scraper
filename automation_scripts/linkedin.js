@@ -3,6 +3,7 @@ const puppeteer = require('puppeteer');
 
 const runLinkedIn = async (jobTitle, jobLocation, datePosted, sortBy) => {
 
+    console.log('Starting LinkedIn scrape...')
     const url = 'https://www.linkedin.com/jobs/search'
 
 
@@ -90,8 +91,9 @@ const runLinkedIn = async (jobTitle, jobLocation, datePosted, sortBy) => {
 
     await browser.close();
 
-    return jobs
+    console.log('Scrape complete! Preparing results...')
 
+    return jobs
 
 }
 

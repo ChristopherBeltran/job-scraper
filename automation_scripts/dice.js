@@ -3,6 +3,7 @@ const puppeteer = require('puppeteer');
 
 const runDice = async (jobTitle, jobLocation, datePosted, sortBy) => {
 
+    console.log('Starting Dice scrape...')
     const url = 'https://www.dice.com/'
 
     const browser = await puppeteer.launch({
@@ -78,6 +79,7 @@ const runDice = async (jobTitle, jobLocation, datePosted, sortBy) => {
     });
 
     await browser.close();
+    console.log('Scrape complete')
     return jobs
 }
 
