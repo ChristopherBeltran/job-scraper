@@ -16,7 +16,7 @@ const runDice = async (jobTitle, jobLocation, datePosted, sortBy) => {
     const page = await browser.newPage();
     await page.goto(url);
 
-    await page.focus('input.ng-tns-c31-0')
+    await page.focus('[data-cy=typeahead-input]')
     await page.keyboard.type(`${jobTitle}`)
 
     await page.focus('#google-location-search')
