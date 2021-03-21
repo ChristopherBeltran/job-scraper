@@ -39,19 +39,19 @@ const runGlassdoor = async (jobTitle, jobLocation, datePosted, sortBy) => {
     switch (datePosted) {
         case 'Past 24 Hours':
             await page.goto(`${results}&fromAge=1`)
-            await page.waitFor(10000)
+            await page.waitForTimeout(10000)
             break;
         case 'Past 3 Days':
             await page.goto(`${results}&fromAge=3`)
-            await page.waitFor(10000)
+            await page.waitForTimeout(10000)
             break;
         case 'Past 7 Days':
             await page.goto(`${results}&fromAge=7`)
-            await page.waitFor(10000)
+            await page.waitForTimeout(10000)
             break;
         default:
             await page.goto(`${results}&fromAge=1`)
-            await page.waitFor(10000)
+            await page.waitForTimeout(10000)
             break;
     }
 
@@ -60,7 +60,7 @@ const runGlassdoor = async (jobTitle, jobLocation, datePosted, sortBy) => {
     if (sortBy === 'Most Recent') {
         //change search to filter by most recent
         await page.goto(`${resultsUrl}&sortBy=date_desc`)
-        await page.waitFor(6000)
+        await page.waitForTimeout(6000)
     }
 
     const radiusSelector = '#filter_radius'
@@ -76,7 +76,7 @@ const runGlassdoor = async (jobTitle, jobLocation, datePosted, sortBy) => {
 
     const jobs = []
 
-    $('.jlGrid li').each(function (i, el) {
+    $('[data-test=jobListing]').each(function (i, el) {
         const company = $(el).find('.jobEmpolyerName')
         const co = $(company).text()
         const position = $(el).data('normalize-job-title')

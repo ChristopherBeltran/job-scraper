@@ -13,7 +13,7 @@ const runIndeed = async (jobTitle, jobLocation, datePosted, sortBy) => {
     const page = await browser.newPage();
     await page.goto(`${url}?q=${jobTitle}&l=${jobLocation}`);
 
-    await page.waitFor(5000)
+    await page.waitForTimeout(5000)
     await page.content()
     var results = await page.url()
 
@@ -22,22 +22,22 @@ const runIndeed = async (jobTitle, jobLocation, datePosted, sortBy) => {
         case 'Past 24 Hours':
             await page.goto(`
                     ${results}&fromage=1`)
-            await page.waitFor(6000)
+            await page.waitForTimeout(6000)
             break;
         case 'Past 3 Days':
             await page.goto(`
                     ${results}&fromage=3`)
-            await page.waitFor(6000)
+            await page.waitForTimeout(6000)
             break;
         case 'Past 7 Days':
             await page.goto(`
                     ${results}&fromage=7`)
-            await page.waitFor(6000)
+            await page.waitForTimeout(6000)
             break;
         default:
             await page.goto(`
                     ${results}&fromage=1`)
-            await page.waitFor(6000)
+            await page.waitForTimeout(6000)
             break;
     }
 
@@ -54,7 +54,7 @@ const runIndeed = async (jobTitle, jobLocation, datePosted, sortBy) => {
     if (sortBy === 'Most Recent') {
         //change search to filter by most recent
         await page.goto(`${resultsUrl}&sort=date`)
-        await page.waitFor(6000)
+        await page.waitForTimeout(6000)
     }
 
     const content = await page.content();

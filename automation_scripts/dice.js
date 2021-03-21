@@ -31,25 +31,25 @@ const runDice = async (jobTitle, jobLocation, datePosted, sortBy) => {
         page.click('#submitSearch-button'),
     ]);
 
-    await page.waitFor(6000)
+    await page.waitForTimeout(6000)
 
     var resultsUrl = await page.url()
     switch (datePosted) {
         case 'Past 24 Hours':
             await page.goto(`${resultsUrl}&filters.postedDate=ONE`)
-            await page.waitFor(6000)
+            await page.waitForTimeout(6000)
             break;
         case 'Past 3 Days':
             await page.goto(`${resultsUrl}&filters.postedDate=THREE`)
-            await page.waitFor(6000)
+            await page.waitForTimeout(6000)
             break;
         case 'Past 7 Days':
             await page.goto(`${resultsUrl}&filters.postedDate=SEVEN`)
-            await page.waitFor(6000)
+            await page.waitForTimeout(6000)
             break;
         default:
             await page.goto(`${resultsUrl}&filters.postedDate=ONE`)
-            await page.waitFor(6000)
+            await page.waitForTimeout(6000)
             break;
     }
 
